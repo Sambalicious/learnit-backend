@@ -6,14 +6,14 @@ const { apiResponse } = require("../utils/apiResponse");
 const validateRole = (body) => {
   const schema = Joi.object({
     Email: Joi.string().email().required(),
-    UserRole: Joi.string().required(),
+    RoleName: Joi.string().required(),
   });
 
   return schema.validate(body);
 };
 
-exports.editRole = asyncMiddleware(async (req, res) => {
-  let { Email, UserRole } = req.body;
+exports.assignRole = asyncMiddleware(async (req, res) => {
+  let { Email, RoleName } = req.body;
 
   let { error } = validateRole(req.body);
 
@@ -31,7 +31,7 @@ exports.editRole = asyncMiddleware(async (req, res) => {
       .json(apiResponse({ code: 404, errorMessage: "User not found" }));
   }
 
-  let role = await Role.findOne({ where: { UserRole } });
+  let role = await Role.findOne({ where: { RoleName } });
 
   if (!role) {
     return res
@@ -43,8 +43,6 @@ exports.editRole = asyncMiddleware(async (req, res) => {
 
   await user.addRoles(role);
 
-  console.log("count roles", await user.countRoles());
-
   return res
     .status(200)
     .json(
@@ -53,7 +51,7 @@ exports.editRole = asyncMiddleware(async (req, res) => {
 });
 
 exports.createRole = asyncMiddleware(async (req, res) => {
-  let { UserRole, Email } = req.body;
+  let { RoleName, Email } = req.body;
 
   let { error } = validateRole(req.body);
 
@@ -63,7 +61,7 @@ exports.createRole = asyncMiddleware(async (req, res) => {
       .json(apiResponse({ code: 400, errorMessage: error.details[0].message }));
   }
 
-  let role = await Role.findOne({ where: { UserRole } });
+  let role = await Role.findOne({ where: { RoleName } });
 
   if (role) {
     return res
@@ -73,8 +71,15 @@ exports.createRole = asyncMiddleware(async (req, res) => {
       );
   }
 
-  let adminId = await User.findOne({ where: { Email } });
-  role = await Role.create({ UserRole, adminId });
+  let user = await User.findOne({ where: { Email } });
+  if (!user) {
+    return res
+      .status(404)
+      .json(
+        apiResponse({ code: 404, errorMessage: "This user is not registered" })
+      );
+  }
+  role = await Role.create({ RoleName, userId: user.id });
 
   return res.status(200).json(apiResponse({ code: 200, data: { role } }));
 });

@@ -1,12 +1,12 @@
-const { editRole, createRole, getUsers } = require("../controller/admin");
+const { assignRole, createRole, getUsers } = require("../controller/admin");
 const admin = require("../middleware/admin");
 const auth = require("../middleware/auth");
 
 const router = require("express").Router();
 
-router.post("/user", [auth, admin], editRole);
+router.post("/assignRole", [auth, admin], assignRole);
 
-router.post("/user/role", [auth, admin], createRole);
-router.get("/users", [auth, admin], getUsers);
+router.post("/createRole", createRole);
+router.get("/users",  getUsers);
 
 module.exports = router;

@@ -35,9 +35,7 @@ exports.login = asyncMiddleware(async (req, res) => {
       .json(apiResponse({ code: 400, errorMessage: error.details[0].message }));
   }
 
-  let user = await User.findOne({ where: { Email }, include: "roles" });
-
-  console.log(user);
+  let user = await User.findOne({ where: { Email }, include: ["roles"] });
 
   if (!user) {
     return res
@@ -55,7 +53,10 @@ exports.login = asyncMiddleware(async (req, res) => {
 
   const token = jwt.sign({ user }, process.env.SECRET_TOKEN);
 
-  return res
-    .status(200)
-    .json(apiResponse({ code: 200, data: { User: user, AccessToken: token } }));
+  return res.status(200).json(
+    apiResponse({
+      code: 200,
+      data: { User: user, AccessToken: token },
+    })
+  );
 });

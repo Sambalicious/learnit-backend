@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const { asyncMiddleware } = require("../middleware/AsyncMiddleware");
-const { User } = require("../models");
+const { User, Role } = require("../models");
 const { apiResponse } = require("../utils/apiResponse");
 
 const validateUser = (body) => {
@@ -33,7 +33,7 @@ exports.createUser = asyncMiddleware(async (req, res) => {
       .json(apiResponse({ code: 400, errorMessage: error.details[0].message }));
   }
 
-  let user = await User.findOne({ where: { Email } });
+  let user = await User.findOne({ where: { Email }, include: ["roles"] });
 
   if (user) {
     return res.status(400).json(
@@ -52,7 +52,16 @@ exports.createUser = asyncMiddleware(async (req, res) => {
     Password,
     Avatar,
   });
-  return res.status(200).json(apiResponse({ code: 200, data: { user } }));
+
+  let role = await Role.findOne({ where: { RoleName: "student" } });
+
+  if (!role) {
+    role = await Role.create({ RoleName: "student", userId: user });
+  }
+
+  await user.addRoles(role);
+
+  return res.status(200).json(apiResponse({ code: 200, data: { User: user } }));
 });
 
 exports.editUser = asyncMiddleware(async (req, res) => {

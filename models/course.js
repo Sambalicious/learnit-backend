@@ -10,19 +10,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ User }) {
       // define association here
 
-      this.belongsTo(User, { as: "courses", foreignKey: "userId" });
+      this.belongsTo(User, { as: "users", foreignKey: "userId" });
     }
   }
   Course.init(
     {
       Title: DataTypes.STRING,
       Description: DataTypes.STRING,
+      Body: DataTypes.STRING,
       ImageUrl: DataTypes.STRING,
       VideoUrl: DataTypes.STRING,
       UserId: DataTypes.STRING,
     },
     {
       sequelize,
+      tableName: "courses",
       modelName: "Course",
     }
   );

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ User }) {
       // define association here
 
-      this.belongsToMany(User, { foreignKey: "userId", through: "User_Role" });
+      this.belongsToMany(User, { foreignKey: "roleId", through: "User_Role", as:"users" });
     }
 
     toJSON() {
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Role.init(
     {
-      UserRole: {
+      RoleName: {
         type: DataTypes.ENUM("admin", "student", "superAdmin", "teacher"),
         defaultValue: "student",
       },
