@@ -41,7 +41,7 @@ exports.assignRole = asyncMiddleware(async (req, res) => {
       );
   }
 
-  await user.addRoles(role);
+  await user.addRole(role);
 
   return res
     .status(200)

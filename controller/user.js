@@ -53,13 +53,9 @@ exports.createUser = asyncMiddleware(async (req, res) => {
     Avatar,
   });
 
-  let role = await Role.findOne({ where: { RoleName: "student" } });
+  let [role] = await Role.findOrCreate({ where: { RoleName: "student" } });
 
-  if (!role) {
-    role = await Role.create({ RoleName: "student", userId: user });
-  }
-
-  await user.addRoles(role);
+  await user.addRole(role);
 
   return res.status(200).json(apiResponse({ code: 200, data: { User: user } }));
 });

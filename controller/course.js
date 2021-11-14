@@ -63,7 +63,7 @@ exports.createCourse = asyncMiddleware(async (req, res) => {
 });
 
 exports.getAllCourses = asyncMiddleware(async (req, res) => {
-  let courses = await Course.findAll({});
+  let courses = await Course.findAll({ include: ["comments"] });
 
   return res.status(200).json(apiResponse({ code: 200, data: courses }));
 });
@@ -101,14 +101,12 @@ exports.editCourse = asyncMiddleware(async (req, res) => {
   let course = await Course.findOne({ where: { id } });
 
   if (!course) {
-    return res
-      .status(404)
-      .json(
-        apiResponse({
-          code: 404,
-          errorMessage: `Course with Id: ${id} does not exist`,
-        })
-      );
+    return res.status(404).json(
+      apiResponse({
+        code: 404,
+        errorMessage: `Course with Id: ${id} does not exist`,
+      })
+    );
   }
 
   (course.Body = Body),
@@ -130,14 +128,12 @@ exports.deleteCourse = asyncMiddleware(async (req, res) => {
   let course = await Course.findOne({ where: { id } });
 
   if (!course) {
-    return res
-      .status(404)
-      .json(
-        apiResponse({
-          code: 404,
-          errorMessage: `Course with Id: ${id} does not exist`,
-        })
-      );
+    return res.status(404).json(
+      apiResponse({
+        code: 404,
+        errorMessage: `Course with Id: ${id} does not exist`,
+      })
+    );
   }
 
   await course.destroy();
@@ -148,3 +144,11 @@ exports.deleteCourse = asyncMiddleware(async (req, res) => {
       apiResponse({ code: 200, data: `Course with Id: ${id} has been deleted` })
     );
 });
+
+
+
+
+
+
+
+
