@@ -6,6 +6,7 @@ const {
   editCourse,
   deleteCourse,
 } = require("../controller/course");
+const { addToFavorite, getFavorites } = require("../controller/favourite");
 const admin = require("../middleware/admin");
 const auth = require("../middleware/auth");
 
@@ -17,7 +18,15 @@ router.put("/:id", [auth, admin], editCourse);
 router.get("/:id", getCourseById);
 router.delete("/:id", [auth, admin], deleteCourse);
 
+//comments
+
 router.post("/:courseId/comments", addComment);
+
 router.get("/:courseId/comments", getComments);
+
+//favorite
+
+router.post("/favorite", addToFavorite);
+router.get("/favorite", getFavorites);
 
 module.exports = router;

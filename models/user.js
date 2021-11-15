@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const favorite = require("./favorite");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -7,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Course, Role, Comment }) {
+    static associate({ Course, Role, Comment , Favorite}) {
       // define association here
       this.hasMany(Course, { foreignKey: "userId", as: "courses" });
 
@@ -16,9 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         through: "User_Role",
         as: "roles",
       });
-      this.hasMany(Comment, {foreignKey:"userId" ,as: "comments"})
-    }
+      this.hasMany(Comment, { foreignKey: "userId", as: "comments" });
 
+      this.hasMany(Favorite, { foreignKey: "userId", as: "favorites" });
+    }
 
     toJSON() {
       return { ...this.get(), Password: undefined, id: undefined };

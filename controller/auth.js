@@ -35,7 +35,10 @@ exports.login = asyncMiddleware(async (req, res) => {
       .json(apiResponse({ code: 400, errorMessage: error.details[0].message }));
   }
 
-  let user = await User.findOne({ where: { Email }, include: ["roles"] });
+  let user = await User.findOne({
+    where: { Email },
+    include: ["roles", "favorites"],
+  });
 
   if (!user) {
     return res

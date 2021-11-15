@@ -63,7 +63,7 @@ exports.createCourse = asyncMiddleware(async (req, res) => {
 });
 
 exports.getAllCourses = asyncMiddleware(async (req, res) => {
-  let courses = await Course.findAll({ include: ["comments"] });
+  let courses = await Course.findAll({ include: ["comments", "favorites"] });
 
   return res.status(200).json(apiResponse({ code: 200, data: courses }));
 });
@@ -144,11 +144,3 @@ exports.deleteCourse = asyncMiddleware(async (req, res) => {
       apiResponse({ code: 200, data: `Course with Id: ${id} has been deleted` })
     );
 });
-
-
-
-
-
-
-
-
